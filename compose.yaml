@@ -1,0 +1,8 @@
+version: '3.8'
+services:
+  webapp:
+    image: netcomwebuiapp:latest # image we want to build
+    build: . # location of Dockerfile
+    container_name: netcomwebapp
+    ports:
+      - 1234:80
