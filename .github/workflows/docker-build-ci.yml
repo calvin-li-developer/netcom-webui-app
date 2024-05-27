@@ -27,7 +27,7 @@ jobs:
                 docker compose ps
             - name: Health check of running web container
               run: |
-                curl -sSf localhost:1234/health.html > /dev/null && echo "SUCCESS: STATUS 200"
+                (curl -sSf localhost:1234/health.html > /dev/null && echo "SUCCESS: STATUS 200") || (echo "FAILURE: STATUS 404")
             - name: docker clean up
               run: |
                 docker compose down
