@@ -1,4 +1,7 @@
 version: '3.8'
+
+# docker compose up -d
+
 services:
   webapp:
     image: netcomwebuiapp:latest # image we want to build
