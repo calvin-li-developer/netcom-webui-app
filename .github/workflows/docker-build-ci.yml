@@ -25,4 +25,9 @@ jobs:
               run: |
                 docker compose up -d
                 docker compose ps
+            - name: Health check of running web container
+              run: |
+                curl localhost:1234/health.html
+            - name: docker clean up
+              run: |
                 docker compose down
