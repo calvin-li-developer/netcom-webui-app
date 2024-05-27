@@ -36,9 +36,9 @@ jobs:
                 username: ${{ secrets.DOCKERHUB_USERNAME }}
                 password: ${{ secrets.DOCKERHUB_TOKEN }}
             
-            # - name: Docker Hub push
-            #   run: |
-            #     docker push docker.io/calvinlideveloper/netcomwebuiapp:latest
+            - name: Docker Hub push
+              run: |
+                docker push calvinlideveloper/netcomwebuiapp:latest
         
             - name: docker clean up
               run: |
