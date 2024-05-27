@@ -17,3 +17,12 @@ jobs:
                 cat /etc/os-release
                 docker version
                 docker-compose version
+            
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Use docker compose to build
+              run: |
+                docker compose up -d
+                docker compose ps
+                docker compose down
