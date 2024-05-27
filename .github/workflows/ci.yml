@@ -2,21 +2,18 @@
 name: web docker build pipeline
 
 on:
-	push:
-		branches:
-			- "main"
+    push:
+        branches:
+            - "main"
 
 jobs:
-	build:
-		runs-on: ubuntu-latest
-		steps:
-			- name: pre-checks
-			run: |
-				uname -r
-				whoami
-				cat /etc/os-release
-				docker version
-				docker-compose version
-				
-			- name: Checkout repository
-			uses: actions/checkout@v4
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: pre-checks
+              run: |
+                uname -r
+                whoami
+                cat /etc/os-release
+                docker version
+                docker-compose version
