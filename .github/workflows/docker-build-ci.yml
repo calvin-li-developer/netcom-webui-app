@@ -28,7 +28,7 @@ jobs:
             
             - name: Health check of running web container
               run: |
-                (curl -sSf localhost:1234/health.html > /dev/null && echo "SUCCESS: STATUS 200") || (echo "FAILURE: STATUS 404")
+                (curl -sSf localhost:1234/health.html > /dev/null && echo "SUCCESS: STATUS 200") || (echo "FAILURE: STATUS 404" && exit 1)
             
             - name: Log in to Docker Hub
               uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a #v3.1
