@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine
+FROM nginxinc/nginx-unprivileged:stable-alpine
 
 LABEL name="Calvin"
 LABEL email="calvin.li.developer@gmail.com"

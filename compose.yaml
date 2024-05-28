@@ -8,4 +8,4 @@ services:
     build: . # location of Dockerfile
     container_name: netcomwebapp
     ports:
-      - 1234:80
+      - 1234:8080
