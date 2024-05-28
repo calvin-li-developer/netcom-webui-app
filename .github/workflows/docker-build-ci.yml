@@ -1,5 +1,5 @@
 # create a docker build pipeline
-name: web docker build pipeline
+name: web docker build & push image to DockerHub pipeline
 
 on:
     push:
