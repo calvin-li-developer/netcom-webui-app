@@ -24,6 +24,7 @@ jobs:
                 elif [ "$GITHUB_REF" = "refs/heads/dev" ]; then
                   echo "tag=dev" >> $GITHUB_ENV
                 fi
+                sonarqube-scanner --version || echo "sonarqube does not exist"
             
             - name: Checkout repository
               uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #v4.1.6
