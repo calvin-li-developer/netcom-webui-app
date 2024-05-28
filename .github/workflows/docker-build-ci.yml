@@ -38,9 +38,7 @@ jobs:
                 args: >
                   -Dsonar.projectKey=calvinli-python-project
                   -Dsonar.sources=.
-                  -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
-                  -Dsonar.token=${{ secrets.SONAR_TOKEN }}
-
+                  
             - name: Use docker compose to build
               run: |
                 docker compose up -d
