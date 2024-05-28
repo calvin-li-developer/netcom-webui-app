@@ -24,10 +24,19 @@ jobs:
                 elif [ "$GITHUB_REF" = "refs/heads/dev" ]; then
                   echo "tag=dev" >> $GITHUB_ENV
                 fi
-                sonarqube-scanner --version || echo "sonarqube does not exist"
             
             - name: Checkout repository
               uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #v4.1.6
+
+            - name: SonarQube Scan
+              uses: sonarsource/sonarqube-scan-action@86fe81775628f1c6349c28baab87881a2170f495 #v2.1.0
+              with:
+                projectBaseDir: .
+                args: >
+                  -Dsonar.projectKey=calvinli-python-project
+                  -Dsonar.sources=.
+                  -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }}
+                  -Dsonar.token=${{ secrets.SONAR_TOKEN }}
 
             - name: Use docker compose to build
               run: |
