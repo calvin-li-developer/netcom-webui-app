@@ -16,12 +16,31 @@ jobs:
           - name: SonarQube Scan
             run: |
               sonar-scanner.bat -D"sonar.projectKey=calvinli-python-project" -D"sonar.sources=." -D"sonar.host.url=${{ secrets.SONAR_HOST_URL }}" -D"sonar.token=${{ secrets.SONAR_TOKEN }}"
+          
+          - name: Upload Artifact
+            uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #v4.3.3
+            with:
+              name: sonarqube_artifact
+              path: |
+                Dockerfile
+                compose.yaml
+                html/
+              retention-days: 5
 
     build:
         runs-on: ubuntu-latest
         needs: sast
         steps:
-            - name: just checking general message
-              run: |
-                echo "Python version"
-                python -V
+          - name: Download sonarqube artifact from sast
+            uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e #v4.1.7
+            with:
+              name: sonarqube_artifact
+
+          - name: Use docker compose to build
+            run: |
+              docker compose up -d
+              docker compose ps
+          
+          - name: Health check of running web container
+            run: |
+              (curl -sSf localhost:1234/health.html > /dev/null && echo "SUCCESS: STATUS 200") || (echo "FAILURE: STATUS 404" && exit 1)
