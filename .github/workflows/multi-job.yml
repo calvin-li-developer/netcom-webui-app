@@ -48,8 +48,7 @@ jobs:
               (curl -sSf --retry 3 --retry-all-errors localhost:1234/health.html > /dev/null && echo "SUCCESS: STATUS 200") || (echo "FAILURE: STATUS 404" && exit 1)
           
           - name: Generate Unix timestamp
-            id: timestamp
-            run: echo "::set-output name=timestamp::$(date +%s)"
+            run: echo "timestamp=$(date +%s)" >> $GITHUB_ENV
           
           - name: Configure AWS Credentials
             uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 #v4.0.2
@@ -62,7 +61,7 @@ jobs:
             env:
               REGISTRY: ${{ steps.login-ecr.outputs.registry }}
               REPOSITORY: bmo-webui-app
-              IMAGE_TAG: calvin-v${{ steps.timestamp.outputs.timestamp }}
+              IMAGE_TAG: calvin-v${{ env.timestamp }}
             run: |
               docker image ls
               aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 751136288263.dkr.ecr.us-east-1.amazonaws.com
