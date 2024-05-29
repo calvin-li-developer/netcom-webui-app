@@ -1,0 +1,35 @@
+# create a docker build pipeline
+name: web multi job pipeline
+
+on:
+    push:
+        branches:
+            - "dev1"
+
+jobs:
+    code-check:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checks
+              run: |
+                uname -r
+                whoami
+                cat /etc/os-release
+
+    sast:
+        runs-on: self-hosted
+        needs: code-check
+        steps:
+            - name: checking docker version and sonarscanner
+              run: |
+                docker version
+                sonar-scanner --version
+
+    build:
+        runs-on: macos-latest
+        needs: sast
+        steps:
+            - name: just checking general message
+              run: |
+                echo "Python version"
+                python -V
