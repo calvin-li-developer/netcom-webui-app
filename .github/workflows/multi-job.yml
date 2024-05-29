@@ -45,4 +45,4 @@ jobs:
           
           - name: Health check of running web container
             run: |
-              (curl -sSf --retry-all-errors localhost:1234/health.html > /dev/null && echo "SUCCESS: STATUS 200") || (echo "FAILURE: STATUS 404" && exit 1)
+              (curl -sSf --retry 3 --retry-all-errors localhost:1234/health.html > /dev/null && echo "SUCCESS: STATUS 200") || (echo "FAILURE: STATUS 404" && exit 1)
