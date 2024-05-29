@@ -25,6 +25,8 @@ jobs:
                 Dockerfile
                 compose.yaml
                 html/
+                !**/.git*
+                !**/*.md
               retention-days: 5
 
     build:
