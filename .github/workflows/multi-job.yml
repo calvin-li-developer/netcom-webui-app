@@ -20,10 +20,9 @@ jobs:
         runs-on: self-hosted
         needs: code-check
         steps:
-            - name: checking docker version and sonarscanner
+            - name: checking docker version
               run: |
                 docker version
-                sonar-scanner --version
 
     build:
         runs-on: macos-latest
