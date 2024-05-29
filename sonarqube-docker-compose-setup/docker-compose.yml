@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  sonarqube-database:
+    image: postgres:alpine
+    container_name: sonarqube-db-c1
+    restart: always
+    environment:
+      POSTGRES_USER: sonaruser
+      POSTGRES_PASSWORD: sonarP@ssword
+      POSTGRES_DB: sonarqubedb
+
+  sonarqube-server:
+    image: sonarqube
+    container_name: sonar-server-c1
+    depends_on:
+      - sonarqube-database
+    ports:
+      - 9000:9000
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonarqube-database:5432/sonarqubedb
+      SONAR_JDBC_USERNAME: sonaruser
+      SONAR_JDBC_PASSWORD: sonarP@ssword
+    restart: always
