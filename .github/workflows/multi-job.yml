@@ -61,5 +61,6 @@ jobs:
               IMAGE_TAG: calvin-v${{ github.sha }}
             run: |
               docker image ls
+              aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 751136288263.dkr.ecr.us-east-1.amazonaws.com
               docker tag netcomwebuiapp:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/$REPOSITORY:$IMAGE_TAG
               docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.us-east-1.amazonaws.com/$REPOSITORY:$IMAGE_TAG
