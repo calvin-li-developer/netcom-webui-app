@@ -44,11 +44,22 @@ jobs:
                 docker compose up -d
                 docker compose ps
             
+            - name: Generate Unix timestamp
+              run: echo "timestamp=$(date +%s)" >> $GITHUB_ENV
+
+            - name: Rename image & version
+              env:
+                IMAGE_TAG: v${{ env.timestamp }}
+              run: |
+                docker tag netcomwebuiapp:latest netcomwebuiapp:$IMAGE_TAG
+            
             - name: Run Trivy vulnerability scanner
+              env:
+                IMAGE_TAG: v${{ env.timestamp }}
               uses: aquasecurity/trivy-action@fd25fed6972e341ff0007ddb61f77e88103953c2 #v0.21.0
               with:
                 scan-type: 'image'
                 severity: 'HIGH,CRITICAL'
-                image-ref: 'netcompythonapp:latest'
+                image-ref: 'netcomwebuiapp:$IMAGE_TAG'
                 format: 'table'
                 exit-code: '1'
