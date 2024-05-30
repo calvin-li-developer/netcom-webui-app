@@ -2,6 +2,7 @@
 name: web multi job pipeline
 
 on:
+    workflow_dispatch:
     push:
         branches:
             - "dev1"
