@@ -42,7 +42,7 @@ jobs:
                   -Dsonar.projectKey=calvinli-python-project
                   -Dsonar.sources=.
             
-            - name: SonarQube Scan
+            - name: SonarQube Scan for CDK Code
               uses: sonarsource/sonarqube-scan-action@86fe81775628f1c6349c28baab87881a2170f495 #v2.1.0
               env:
                 SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
