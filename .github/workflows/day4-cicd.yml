@@ -75,7 +75,7 @@ jobs:
               id: meta
               uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81 #v5.5.1
               with:
-                images: calvinlideveloper/netcompythonapp
+                images: ${{ secrets.DOCKERHUB_USERNAME }}/netcompythonapp
             
             - name: Build and push Docker image
               id: push
@@ -86,7 +86,7 @@ jobs:
                 context: ./python-app-secret
                 file: ./python-app-secret/Dockerfile
                 push: true
-                tags: calvinlideveloper/netcompythonapp:${{ env.IMAGE_TAG }}
+                tags: ${{ secrets.DOCKERHUB_USERNAME }}/netcompythonapp:${{ env.IMAGE_TAG }}
                 labels: ${{ steps.meta.outputs.labels }}
         
             - name: docker clean up
