@@ -25,10 +25,27 @@ export class EcsStack extends cdk.Stack {
       cpu:  256,
       memoryLimitMiB: 512
     });
+
     // adding container info 
     const container = taskDef.addContainer('container-def1',{
       image: ecs.ContainerImage.fromRegistry('calvinlideveloper/netcompythonapp:v1717086447'),
       memoryLimitMiB: 256,
+    });
+
+    // adding Fargate Service
+    new ecs.FargateService(this, 'FargateService', {
+      cluster,
+      taskDef,
+      deploymentController: {
+        type: ecs.DeploymentControllerType.ECS,
+      },
+      capacityProviderStrategies: [
+        {
+          capacityProvider: 'FARGATE',
+          base: 0,
+          weight: 1,
+        },
+      ],
     });
   }
 }
