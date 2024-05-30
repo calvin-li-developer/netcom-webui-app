@@ -3,7 +3,8 @@ FROM python:alpine
 LABEL name="Calvin"
 LABEL email="calvin.li.developer@gmail.com"
 
-RUN adduser nonroot
+# Create a group and user
+RUN adduser --disabled-password --no-create-home nonroot
 
 USER nonroot
 
