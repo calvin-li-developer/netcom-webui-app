@@ -32,20 +32,20 @@ export class EcsStack extends cdk.Stack {
       memoryLimitMiB: 256,
     });
 
-    // adding Fargate Service
-    new ecs.FargateService(this, 'FargateService', {
-      cluster: cluster,
-      taskDefinition: taskDef,
-      deploymentController: {
-        type: ecs.DeploymentControllerType.ECS,
-      },
-      capacityProviderStrategies: [
-        {
-          capacityProvider: 'FARGATE',
-          base: 0,
-          weight: 1,
-        },
-      ],
-    });
+    // // adding Fargate Service
+    // new ecs.FargateService(this, 'FargateService', {
+    //   cluster: cluster,
+    //   taskDefinition: taskDef,
+    //   deploymentController: {
+    //     type: ecs.DeploymentControllerType.ECS,
+    //   },
+    //   capacityProviderStrategies: [
+    //     {
+    //       capacityProvider: 'FARGATE',
+    //       base: 0,
+    //       weight: 1,
+    //     },
+    //   ],
+    // });
   }
 }
