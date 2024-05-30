@@ -105,8 +105,8 @@ jobs:
                 aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                 aws-region: us-east-1
               
-            - name: CDK diff
+            - name: CDK diff / cdk deploy
               run: |
                 cd ecs
                 npm install
-                npx cdk diff
+                npx cdk diff && npx cdk deploy
