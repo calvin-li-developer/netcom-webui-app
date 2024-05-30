@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:alpine
 
 LABEL name="Calvin"
 LABEL email="calvin.li.developer@gmail.com"
