@@ -51,3 +51,4 @@ jobs:
                 severity: 'HIGH,CRITICAL'
                 image-ref: 'netcompythonapp:latest'
                 format: 'table'
+                exit-code: '1'
