@@ -3,8 +3,7 @@ FROM python:3
 LABEL name="Calvin"
 LABEL email="calvin.li.developer@gmail.com"
 
-RUN addgroup -S nonroot \
-    && adduser -S nonroot -G nonroot
+RUN adduser nonroot
 
 USER nonroot
 
