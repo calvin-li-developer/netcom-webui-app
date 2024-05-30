@@ -109,4 +109,4 @@ jobs:
               run: |
                 cd ecs
                 npm install
-                npx cdk diff && npx run deploy
+                npx cdk diff && npx cdk deploy --require-approval=never
