@@ -4,7 +4,6 @@ name: web docker build & push image to DockerHub pipeline
 on:
     push:
         branches:
-            - "main"
             - "dev"
 
 jobs:
