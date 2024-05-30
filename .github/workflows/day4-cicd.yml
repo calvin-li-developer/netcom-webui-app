@@ -43,3 +43,11 @@ jobs:
                 cd python-app-secret
                 docker compose up -d
                 docker compose ps
+            
+            - name: Run Trivy vulnerability scanner
+              uses: aquasecurity/trivy-action@0.20.0
+              with:
+                scan-type: 'image'
+                severity: 'HIGH,CRITICAL'
+                image-ref: 'netcompythonapp:latest'
+                format: 'table'
