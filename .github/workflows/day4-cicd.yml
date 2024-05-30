@@ -45,7 +45,7 @@ jobs:
                 docker compose ps
             
             - name: Run Trivy vulnerability scanner
-              uses: aquasecurity/trivy-action@0.20.0
+              uses: aquasecurity/trivy-action@fd25fed6972e341ff0007ddb61f77e88103953c2 #v0.21.0
               with:
                 scan-type: 'image'
                 severity: 'HIGH,CRITICAL'
