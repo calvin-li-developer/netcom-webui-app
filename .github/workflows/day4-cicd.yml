@@ -109,10 +109,6 @@ jobs:
                 cd python-app-secret
                 docker compose down
                 docker logout
-
-            - name: npm install
-              run: |
-                cd ecs && npm i
             
             - name: Upload CDK Artifact
               uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #v4.3.3
@@ -138,4 +134,5 @@ jobs:
               
             - name: CDK diff / cdk deploy
               run: |
+                npm install
                 npx cdk diff && npx cdk deploy --require-approval=never
