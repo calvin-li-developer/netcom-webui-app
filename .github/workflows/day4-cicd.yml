@@ -37,3 +37,9 @@ jobs:
                 args: >
                   -Dsonar.projectKey=calvinli-python-project
                   -Dsonar.sources=.
+            
+            - name: Use docker compose to build
+              run: |
+                cd python-app-secret
+                docker compose up -d
+                docker compose ps
