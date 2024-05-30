@@ -47,7 +47,7 @@ jobs:
             - name: Generate Unix timestamp
               run: echo "timestamp=$(date +%s)" >> $GITHUB_ENV
 
-            - name: Rename image & version
+            - name: docker build custom tag verison
               env:
                 IMAGE_TAG: v${{ env.timestamp }}
               run: |
