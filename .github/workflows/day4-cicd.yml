@@ -61,6 +61,6 @@ jobs:
               with:
                 scan-type: 'image'
                 severity: 'HIGH,CRITICAL'
-                image-ref: 'netcomwebuiapp:$IMAGE_TAG'
+                image-ref: netcomwebuiapp:$IMAGE_TAG
                 format: 'table'
                 exit-code: '1'
