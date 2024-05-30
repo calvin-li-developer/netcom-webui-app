@@ -1,0 +1,10 @@
+version: '3.8'
+
+# docker compose up -d
+
+services:
+  pythonapp:
+    image: netcompythonapp:latest # image we want to build
+    build: . # location of Dockerfile
+    container_name: netcompythonapp
+    tty: true
