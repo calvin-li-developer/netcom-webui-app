@@ -51,7 +51,8 @@ jobs:
               env:
                 IMAGE_TAG: v${{ env.timestamp }}
               run: |
-                docker tag netcomwebuiapp:latest netcomwebuiapp:$IMAGE_TAG
+                cd python-app-secret
+                docker build -t netcomwebuiapp:v$IMAGE_TAG .
             
             - name: Run Trivy vulnerability scanner
               env:
