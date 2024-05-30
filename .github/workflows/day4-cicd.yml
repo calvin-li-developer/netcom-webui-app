@@ -108,5 +108,5 @@ jobs:
             - name: CDK diff
               run: |
                 cd ecs
-                cdk --version
-                cdk diff
+                npm install
+                npx cdk diff
