@@ -34,8 +34,8 @@ export class EcsStack extends cdk.Stack {
 
     // adding Fargate Service
     new ecs.FargateService(this, 'FargateService', {
-      cluster,
-      taskDef,
+      cluster: cluster,
+      taskDefinition: taskDef,
       deploymentController: {
         type: ecs.DeploymentControllerType.ECS,
       },
