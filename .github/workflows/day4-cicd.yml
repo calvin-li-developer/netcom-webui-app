@@ -6,6 +6,10 @@ on:
         branches:
             - "dev"
 
+env:
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+  CDK_DEFAULT_REGION: us-east-1
+
 jobs:
     build:
         runs-on: ubuntu-latest
