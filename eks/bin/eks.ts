@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { EksStack } from '../lib/ecs-stack';
+import { EksStack } from '../lib/eks-stack';
 
 const app = new cdk.App();
 new EksStack(app, 'EksStack-Calvin', {

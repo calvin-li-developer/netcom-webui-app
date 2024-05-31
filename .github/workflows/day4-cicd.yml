@@ -12,145 +12,145 @@ env:
 
 jobs:
     build:
-        outputs:
-          IMAGE_TAG: ${{ steps.image-tag.outputs.IMAGE_TAG }}
-        runs-on: ubuntu-latest
-        steps:
-            - name: pre-checks
-              run: |
-                uname -r
-                whoami
-                cat /etc/os-release
-                docker version
-                docker-compose version
+      outputs:
+        IMAGE_TAG: ${{ steps.image-tag.outputs.IMAGE_TAG }}
+      runs-on: ubuntu-latest
+      steps:
+          - name: pre-checks
+            run: |
+              uname -r
+              whoami
+              cat /etc/os-release
+              docker version
+              docker-compose version
 
-                if [ "$GITHUB_REF" = "refs/heads/main" ]; then
-                  echo "tag=latest" >> $GITHUB_ENV
-                elif [ "$GITHUB_REF" = "refs/heads/dev" ]; then
-                  echo "tag=dev" >> $GITHUB_ENV
-                fi
-            
-            - name: Checkout repository
-              uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #v4.1.6
+              if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+                echo "tag=latest" >> $GITHUB_ENV
+              elif [ "$GITHUB_REF" = "refs/heads/dev" ]; then
+                echo "tag=dev" >> $GITHUB_ENV
+              fi
+          
+          - name: Checkout repository
+            uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #v4.1.6
 
-            - name: SonarQube Scan for Python Project
-              uses: sonarsource/sonarqube-scan-action@86fe81775628f1c6349c28baab87881a2170f495 #v2.1.0
-              env:
-                SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-                SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-              with:
-                projectBaseDir: python-app-secret
-                args: >
-                  -Dsonar.projectKey=calvinli-python-project
-                  -Dsonar.sources=.
-            
-            - name: SonarQube Scan for CDK Code
-              uses: sonarsource/sonarqube-scan-action@86fe81775628f1c6349c28baab87881a2170f495 #v2.1.0
-              env:
-                SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-                SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-              with:
-                projectBaseDir: ecs
-                args: >
-                  -Dsonar.projectKey=calvinli-python-project
-                  -Dsonar.sources=.
-            
-            - name: Use docker compose to build
-              run: |
-                # cd python-app-secret
-                docker compose up -d
-                docker compose ps
-            
-            - name: Generate Unix timestamp
-              id: image-tag
-              run: |
-                echo "timestamp=$(date +%s)" >> $GITHUB_ENV
-                echo "IMAGE_TAG=v$(date +%s)" >> $GITHUB_OUTPUT
+          - name: SonarQube Scan for Python Project
+            uses: sonarsource/sonarqube-scan-action@86fe81775628f1c6349c28baab87881a2170f495 #v2.1.0
+            env:
+              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+              SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+            with:
+              projectBaseDir: python-app-secret
+              args: >
+                -Dsonar.projectKey=calvinli-python-project
+                -Dsonar.sources=.
+          
+          - name: SonarQube Scan for CDK Code
+            uses: sonarsource/sonarqube-scan-action@86fe81775628f1c6349c28baab87881a2170f495 #v2.1.0
+            env:
+              SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+              SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+            with:
+              projectBaseDir: ecs
+              args: >
+                -Dsonar.projectKey=calvinli-python-project
+                -Dsonar.sources=.
+          
+          - name: Use docker compose to build
+            run: |
+              # cd python-app-secret
+              docker compose up -d
+              docker compose ps
+          
+          - name: Generate Unix timestamp
+            id: image-tag
+            run: |
+              echo "timestamp=$(date +%s)" >> $GITHUB_ENV
+              echo "IMAGE_TAG=v$(date +%s)" >> $GITHUB_OUTPUT
 
-            - name: docker build custom tag verison
-              env:
-                IMAGE_TAG: v${{ env.timestamp }}
-              run: |
-                # cd python-app-secret
-                docker build -t netcomwebuiapp:$IMAGE_TAG .
-            
-            - name: Run Trivy vulnerability scanner
-              env:
-                IMAGE_TAG: v${{ env.timestamp }}
-              uses: aquasecurity/trivy-action@fd25fed6972e341ff0007ddb61f77e88103953c2 #v0.21.0
-              with:
-                scan-type: 'image'
-                severity: 'HIGH,CRITICAL'
-                image-ref: netcomwebuiapp:${{ env.IMAGE_TAG }}
-                format: 'table'
-                exit-code: '1'
-            
-            - name: Log in to Docker Hub
-              uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 #v3.2.0
-              with:
-                username: ${{ secrets.DOCKERHUB_USERNAME }}
-                password: ${{ secrets.DOCKERHUB_TOKEN }}
-            
-            - name: Extract metadata (tags, labels) for Docker
-              id: meta
-              uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81 #v5.5.1
-              with:
-                images: ${{ secrets.DOCKERHUB_USERNAME }}/netcomwebuiapp
-            
-            - name: Build and push Docker image
-              id: push
-              env:
-                IMAGE_TAG: v${{ env.timestamp }}
-              uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0 #v5.3.0
-              with:
-                context: .
-                file: ./Dockerfile
-                push: true
-                tags: ${{ secrets.DOCKERHUB_USERNAME }}/netcomwebuiapp:${{ env.IMAGE_TAG }}
-                labels: ${{ steps.meta.outputs.labels }}
-        
-            - name: docker clean up
-              run: |
-                # cd python-app-secret
-                docker compose down
-                docker logout
-            
-            - name: Upload ECS CDK Artifact
-              uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #v4.3.3
-              with:
-                name: cdk_ecs_artifact
-                path: |
-                  ecs/
-                retention-days: 5
-            
-            - name: Upload EKS CDK Artifact
-              uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #v4.3.3
-              with:
-                name: cdk_eks_artifact
-                path: |
-                  eks/
-                retention-days: 5
+          - name: docker build custom tag verison
+            env:
+              IMAGE_TAG: v${{ env.timestamp }}
+            run: |
+              # cd python-app-secret
+              docker build -t netcomwebuiapp:$IMAGE_TAG .
+          
+          - name: Run Trivy vulnerability scanner
+            env:
+              IMAGE_TAG: v${{ env.timestamp }}
+            uses: aquasecurity/trivy-action@fd25fed6972e341ff0007ddb61f77e88103953c2 #v0.21.0
+            with:
+              scan-type: 'image'
+              severity: 'HIGH,CRITICAL'
+              image-ref: netcomwebuiapp:${{ env.IMAGE_TAG }}
+              format: 'table'
+              exit-code: '1'
+          
+          - name: Log in to Docker Hub
+            uses: docker/login-action@0d4c9c5ea7693da7b068278f7b52bda2a190a446 #v3.2.0
+            with:
+              username: ${{ secrets.DOCKERHUB_USERNAME }}
+              password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+          - name: Extract metadata (tags, labels) for Docker
+            id: meta
+            uses: docker/metadata-action@8e5442c4ef9f78752691e2d8f8d19755c6f78e81 #v5.5.1
+            with:
+              images: ${{ secrets.DOCKERHUB_USERNAME }}/netcomwebuiapp
+          
+          - name: Build and push Docker image
+            id: push
+            env:
+              IMAGE_TAG: v${{ env.timestamp }}
+            uses: docker/build-push-action@2cdde995de11925a030ce8070c3d77a52ffcf1c0 #v5.3.0
+            with:
+              context: .
+              file: ./Dockerfile
+              push: true
+              tags: ${{ secrets.DOCKERHUB_USERNAME }}/netcomwebuiapp:${{ env.IMAGE_TAG }}
+              labels: ${{ steps.meta.outputs.labels }}
+      
+          - name: docker clean up
+            run: |
+              # cd python-app-secret
+              docker compose down
+              docker logout
+          
+          - name: Upload ECS CDK Artifact
+            uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #v4.3.3
+            with:
+              name: cdk_ecs_artifact
+              path: |
+                ecs/
+              retention-days: 5
+          
+          - name: Upload EKS CDK Artifact
+            uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #v4.3.3
+            with:
+              name: cdk_eks_artifact
+              path: |
+                eks/
+              retention-days: 5
     cdk-ecs:
-        runs-on: ubuntu-latest
-        needs: build
-        steps:
-            - name: Download sonarqube artifact from sast
-              uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e #v4.1.7
-              with:
-                name: cdk_ecs_artifact
-            - name: Configure AWS Credentials
-              uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 #v4.0.2
-              with:
-                aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                aws-region: us-east-1
-              
-            - name: CDK diff / cdk deploy
-              env:
-                IMAGE_TAG: ${{ needs.build.outputs.IMAGE_TAG }}
-              run: |
-                npm install
-                npx cdk diff && npx cdk deploy --require-approval=never
+      runs-on: ubuntu-latest
+      needs: build
+      steps:
+          - name: Download sonarqube artifact from sast
+            uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e #v4.1.7
+            with:
+              name: cdk_ecs_artifact
+          - name: Configure AWS Credentials
+            uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 #v4.0.2
+            with:
+              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+              aws-region: us-east-1
+            
+          - name: CDK diff / cdk deploy
+            env:
+              IMAGE_TAG: ${{ needs.build.outputs.IMAGE_TAG }}
+            run: |
+              npm install
+              npx cdk diff && npx cdk deploy --require-approval=never
       
     cdk-eks:
       runs-on: ubuntu-latest

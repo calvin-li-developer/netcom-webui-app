@@ -2,7 +2,7 @@
   "name": "ecs",
   "version": "0.1.0",
   "bin": {
-    "ecs": "bin/ecs.js"
+    "eks": "bin/eks.js"
   },
   "scripts": {
     "build": "tsc",
