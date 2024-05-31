@@ -56,24 +56,5 @@ export class EcsStack extends cdk.Stack {
       securityGroups: [secgroup]   // attaching security group 
     });
 
-    // creating IAM role for EKS cluster -- control plane 
-    const iamRole = new iam.Role(this,'iam-role1',{
-      assumedBy: new iam.AccountRootPrincipal(),
-    });
-
-    // creating EKS cluster
-    const cluster = new eks.Cluster(this,'calvin-eks-clustercdk',{
-      vpc: vpc,
-      version: eks.KubernetesVersion.V1_29,
-      clusterName: 'calvin-cdk-eks-cluster',
-      mastersRole: iamRole,
-      endpointAccess: eks.EndpointAccess.PUBLIC_AND_PRIVATE,
-      defaultCapacityInstance: ec2.InstanceType.of(ec2.InstanceClass.T3,ec2.InstanceSize.MEDIUM),
-      defaultCapacity: 1,
-      vpcSubnets: [{ subnetType: ec2.SubnetType.PUBLIC}],
-      securityGroup: secgroup
-      
-    });
-
   }
 }
