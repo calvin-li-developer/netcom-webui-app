@@ -38,14 +38,14 @@ export class EcsStack extends cdk.Stack {
     });
 
     // creating security group 
-    const secgroup = new ec2.SecurityGroup(this,'ashufirewallgrp',{
+    const secgroup = new ec2.SecurityGroup(this,'security-group1',{
       vpc: vpc,
       description: 'allow ingress rules for 80 port'
     });
     secgroup.addIngressRule(ec2.Peer.anyIpv4(),ec2.Port.tcp(80),'allow http traffic');
 
     // adding Fargate Service
-    const service = new ecs.FargateService(this,'ashuECSserviceCDK',{
+    const service = new ecs.FargateService(this,'fargate-service1',{
       cluster: cluster,
       taskDefinition: taskDef,
       serviceName: 'calvin-svc-by-cdk',
