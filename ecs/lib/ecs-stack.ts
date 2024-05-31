@@ -42,7 +42,7 @@ export class EcsStack extends cdk.Stack {
       vpc: vpc,
       description: 'allow ingress rules for 80 port'
     });
-    secgroup.addIngressRule(ec2.Peer.anyIpv4(),ec2.Port.tcp(80),'allow http traffic');
+    secgroup.addIngressRule(ec2.Peer.anyIpv4(),ec2.Port.tcp(8080),'allow http traffic');
 
     // adding Fargate Service
     const service = new ecs.FargateService(this,'fargate-service1',{
