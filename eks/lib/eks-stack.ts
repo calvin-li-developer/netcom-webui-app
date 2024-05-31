@@ -11,7 +11,7 @@ export class EksStack extends cdk.Stack {
     super(scope, id, props);
 
     // refering to existing vpc 
-    const vpc = ec2.Vpc.fromLookup(this,'existing-vpc', {
+    const vpc = ec2.Vpc.fromVpcAttributes(this,'existing-vpc', {
       vpcId: 'vpc-063afa0c24ec80cb8'
       availabilityZones: ['us-east-1a','us-east-1b','us-east-1c'],
       publicSubnetIds: ['subnet-030435708c307f60c','subnet-0e1900e176370c252','subnet-0a3e4ba627e65ea53']
