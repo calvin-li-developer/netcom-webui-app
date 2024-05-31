@@ -26,26 +26,33 @@ export class EcsStack extends cdk.Stack {
       memoryLimitMiB: 512
     });
 
+    const IMAGE_TAG = process.env.IMAGE_TAG as string;
+
+    if (!IMAGE_TAG) {
+      throw new Error("IMAGE TAG MISSING");
+    }
     // adding container info 
     const container = taskDef.addContainer('container-def1',{
-      image: ecs.ContainerImage.fromRegistry('calvinlideveloper/netcompythonapp:v1717086447'),
+      image: ecs.ContainerImage.fromRegistry(`calvinlideveloper/netcomwebuiapp:${ IMAGE_TAG }`),
       memoryLimitMiB: 256,
     });
 
-    // // adding Fargate Service
-    // new ecs.FargateService(this, 'FargateService', {
-    //   cluster: cluster,
-    //   taskDefinition: taskDef,
-    //   deploymentController: {
-    //     type: ecs.DeploymentControllerType.ECS,
-    //   },
-    //   capacityProviderStrategies: [
-    //     {
-    //       capacityProvider: 'FARGATE',
-    //       base: 0,
-    //       weight: 1,
-    //     },
-    //   ],
-    // });
+    // creating security group 
+    const secgroup = new ec2.SecurityGroup(this,'ashufirewallgrp',{
+      vpc: vpc,
+      description: 'allow ingress rules for 80 port'
+    });
+    secgroup.addIngressRule(ec2.Peer.anyIpv4(),ec2.Port.tcp(80),'allow http traffic');
+
+    // adding Fargate Service
+    const service = new ecs.FargateService(this,'ashuECSserviceCDK',{
+      cluster: cluster,
+      taskDefinition: taskDef,
+      serviceName: 'calvin-svc-by-cdk',
+      desiredCount: 1,
+      assignPublicIp: true,
+      securityGroups: [secgroup]   // attaching security group 
+    });
+
   }
 }
