@@ -130,6 +130,14 @@ jobs:
               path: |
                 eks/
               retention-days: 5
+
+          - name: Upload EKS YML Artifact
+            uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 #v4.3.3
+            with:
+              name: eks_yml_artifact
+              path: |
+                eks-yml/
+              retention-days: 5
     cdk-ecs:
       runs-on: ubuntu-latest
       needs: build
@@ -138,6 +146,7 @@ jobs:
             uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e #v4.1.7
             with:
               name: cdk_ecs_artifact
+
           - name: Configure AWS Credentials
             uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 #v4.0.2
             with:
@@ -174,6 +183,11 @@ jobs:
             run: |
               npm install
               npx cdk diff && npx cdk deploy --require-approval=never
+
+          - name: Download sonarqube artifact from sast
+            uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e #v4.1.7
+            with:
+              name: eks_yml_artifact
 
           - name: KubeCtl run
             env:
