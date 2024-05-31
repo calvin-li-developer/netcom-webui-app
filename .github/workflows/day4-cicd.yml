@@ -12,6 +12,8 @@ env:
 
 jobs:
     build:
+        outputs:
+          IMAGE_TAG: ${{ steps.image-tag.outputs.IMAGE_TAG }}
         runs-on: ubuntu-latest
         steps:
             - name: pre-checks
@@ -137,7 +139,7 @@ jobs:
               
             - name: CDK diff / cdk deploy
               env:
-                IMAGE_TAG: ${{ steps.image-tag.outputs.IMAGE_TAG }}
+                IMAGE_TAG: ${{ needs.build.outputs.IMAGE_TAG }}
               run: |
                 npm install
                 npx cdk diff && npx cdk deploy --require-approval=never
