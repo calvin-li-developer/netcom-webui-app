@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: calvin-app-deploy
+  name: calvin-app-deploy # name of deployment
+spec:
+  replicas: 2 # number of pods 
+  selector:
+    matchLabels:
+      app: calvin-app-deploy
+  strategy: {} #  
+  template: # pod templates 
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: calvin-app-deploy
+    spec:
+      containers:
+      - image: netcomwebuiapp:${ IMAGE_TAG }
+        name: calvin-netcomwebuiapp
+        ports:
+        - containerPort: 8080
+        env: # calling Env variables 
+        - name: myapp
+          value: prod 
+        resources: {}
