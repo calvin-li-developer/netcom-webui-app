@@ -174,17 +174,12 @@ jobs:
             run: |
               npm install
               npx cdk diff && npx cdk deploy --require-approval=never
-          
-          - name: Configure AWS Credentials
-            uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 #v4.0.2
-            with:
-              aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-              aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-              aws-region: us-east-1
-              role-to-assume: arn:aws:iam::383993685717:role/EksStack-Calvin-calvineksclustercdkRole1E9D0A46-dgmLNKecE2LK
 
           - name: KubeCtl run
+            env:
+              EKS_CLUSTER_NAME: calvin-cdk-eks-cluster
             run: |
+              aws eks update-kubeconfig --name $EKS_CLUSTER_NAME --region $AWS_REGION
               cd eks-yml
               kubectl get nodes 
               kubectl apply -f .
